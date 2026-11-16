@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8986ee79-435c-458c-93a1-d6610fe65f6d" >
+		<http:listener-connection host="localhost" port="8082" />
+	</http:listener-config>
+	<flow name="flowsFlow" doc:id="f5137c9d-cda5-4ccd-9f9f-1bbdfb6b64a7" >
+		<http:listener doc:name="Listener" doc:id="e6e3d493-51f6-4589-a52c-d4456d2bef73" path="/flow" config-ref="HTTP_Listener_config"/>
+		<logger level="INFO" doc:name="main flow Logger" doc:id="6c614509-a29d-4523-9b02-839b7570cd4b" message="main flow started"/>
+		<ee:transform doc:name="Transform Message" doc:id="66f1cc1f-705f-4633-b98d-048635dd9733" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+   "message":"i am creating flows"
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="6d9a177f-3746-43fc-8678-8619c50505f5" variableName="rajlakshmi"/>
+		<flow-ref doc:name="Flow Reference" doc:id="72b90d39-b6b3-4851-922c-328c6f1dee67" name="flowsSub_Flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="bb4e18d3-1f69-45cd-a586-dcbe1455904f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.rajlakshmi ++ vars.prepared]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="b9ef495a-16c8-49dc-be7e-afd162a90ebf" message="private flow ended"/>
+	</flow>
+	<sub-flow name="flowsSub_Flow" doc:id="28d42657-df8e-4ea5-ad7f-1c4a1011c99f" >
+		<logger level="INFO" doc:name="Logger" doc:id="c1df3b4d-3b9a-4b55-9a3c-8ed938482597" message="subflow started"/>
+		<ee:transform doc:name="Transform Message" doc:id="8da7480e-b4a5-4ed6-a460-022c68e41d7b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+   "message":"sub flow started"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="c0dae47e-322b-408a-838d-780b3c1aefea" variableName="prepared"/>
+		<flow-ref doc:name="Flow Reference" doc:id="3ddfc775-7e14-455a-a777-de5cfd9bc1d5" name="privateflow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="529e4715-be70-4f2d-abb8-816131222745" message="sub flow ended"/>
+	</sub-flow>
+	<flow name="privateflow" doc:id="5c6c808f-8a1a-4832-8f42-f779f061eeff">
+		<logger level="INFO" doc:name="Logger" doc:id="ce80f2eb-cfd3-4bf2-9efd-0d105840c50b" message="private flow started" />
+		<ee:transform doc:name="Transform Message" doc:id="e9960ef5-0e15-43f9-9084-83e6e5dfc45a">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+ "message":"private flow started"
+}
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2dbedb18-75a7-404d-a021-a79f3f100536" message="private flow ended" />
+	</flow>
+</mule>

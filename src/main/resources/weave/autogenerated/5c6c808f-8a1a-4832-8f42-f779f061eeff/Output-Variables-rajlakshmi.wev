@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_5c6c808f_8a1a_4832_8f42_f779f061eeff_Output_Variables_rajlakshmi = {| message: String |}
+
